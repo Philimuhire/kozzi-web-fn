@@ -25,13 +25,13 @@ const products: Product[] = [
 
 const ProductGrid: React.FC = () => {
   return (
-    <div className="bg-white py-12 px-4 sm:px-6 lg:px-20">
-      <h2 className="text-2xl font-bold text-gray-700 mt-24 mb-8">Explore some of our Products</h2>
+    <div className="bg-secondary py-12 px-4 sm:px-6 lg:px-20">
+      <h2 className="text-3xl font-bold text-primary font-outfit mt-24 mb-8">Explore some of our Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
         {products.map((product) => (
           <div
             key={product.id}
-            className="bg-gray-100 shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 transform hover:scale-105 ease-in-out"
+            className="bg-secondary shadow-md rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 transform hover:scale-105 ease-in-out"
           >
             <img
               src={product.image === "garden1" ? gardenImage : heroImage}
@@ -39,12 +39,12 @@ const ProductGrid: React.FC = () => {
               className="w-full h-48 object-cover"
             />
             <div className="p-4">
-              <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-              <p className="text-sm text-gray-600 mt-1">{product.price}</p>
-              <p className="text-sm text-gray-500 mt-1">{product.category}</p> 
+              <h3 className="text-xl font-semibold text-primary font-outfit">{product.name}</h3>
+              <p className="text-lg font-semibold text-third mt-1 font-outfit">{product.price}</p>
+              <p className="text-lg text-gray-500 mt-1 font-outfit">{product.category}</p> 
             </div>
             <div className="flex items-center justify-end p-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600">
+              <button className="bg-third font-outfit text-secondary px-4 py-2 rounded-lg hover:bg-[#EAB4AD] font-semibold">
                 <i className="fas fa-cart-plus"></i> Add to Cart
               </button>
             </div>

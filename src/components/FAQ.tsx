@@ -47,7 +47,7 @@ const FAQComponent: React.FC = () => {
 
         {/* Right FAQ Section */}
         <div className="w-full lg:w-1/2 bg-gray-100 p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-primary mb-4">
+          <h2 className="text-3xl font-bold text-primary font-outfit mb-4">
             Frequently Asked Questions
           </h2>
           <div>
@@ -57,13 +57,13 @@ const FAQComponent: React.FC = () => {
                   className="flex justify-between items-center bg-white p-4 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
                   onClick={() => toggleFAQ(index)}
                 >
-                  <span className="font-semibold">{faq.question}</span>
+                  <span className="font-semibold text-[#8B572A] text-xl font-outfit">{faq.question}</span>
                   <span className="text-xl font-bold text-primary">
                     {activeIndex === index ? "−" : "+"}
                   </span>
                 </div>
                 {activeIndex === index && (
-                  <div className="mt-2 p-4 bg-white border-l-4 border-primary rounded-lg text-gray-700">
+                  <div className="mt-2 p-4 bg-white border-l-4 border-primary rounded-lg text-[#333333] text-xl font-outfit">
                     {faq.answer}
                   </div>
                 )}
@@ -74,7 +74,7 @@ const FAQComponent: React.FC = () => {
           {/* Button Section */}
           <div className="mt-6">
             <button
-              className="bg-gray-700 text-white py-3 px-8 rounded-lg hover:bg-gray-500 transition duration-300 ease-in-out transform hover:scale-105"
+              className="bg-third text-secondary font-outfit py-3 px-8 rounded-lg hover:bg-[#EAB4AD] transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg"
             >
               Contact Us
             </button>

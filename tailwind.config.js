@@ -5,10 +5,13 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        outfit: ['Outfit', 'sans-serif'], 
+      },
       colors: {
-        primary: "#2B7A78", 
-        secondary: "#3AAFA9",
-        accent: "#DEF2F1",
+        primary: "#2E7D32", 
+        secondary: "#FFFFFF",
+        third: "#D19C97",
         background: "#FEFFFF",
       },
     },
