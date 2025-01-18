@@ -2,7 +2,7 @@
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
-    "jsx": "react",  // Ensure JSX is set properly
+    "jsx": "react",  
     "target": "ES6",
     "module": "ESNext",
     "moduleResolution": "node",
@@ -11,10 +11,10 @@
     "allowJs": true,
     "checkJs": false,
     "declaration": true,
-    "types": ["react", "react-dom", "jest"],  // Importing type definitions for React and React-DOM
+    "types": ["react", "react-dom", "jest", "node"], 
     "outDir": "./dist",
     "rootDir": "./src",
   },
-  "include": ["src"],
+  "include": ["src", "images.d.ts"],
   "exclude": ["node_modules"]
 }

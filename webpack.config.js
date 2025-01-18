@@ -22,18 +22,37 @@ module.exports = {
       },
       {
         test: /\.css$/, // Handle CSS files
-        use: ["style-loader", "css-loader"],
+        use: [
+          "style-loader",
+          "css-loader",
+          {
+            loader: "postcss-loader", // Add PostCSS loader
+            options: {
+              postcssOptions: {
+                plugins: ["tailwindcss", "autoprefixer"], // Use Tailwind and Autoprefixer
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|svg|webp)$/, // Handle image files
-        type: "asset/resource",
+        use: [
+          {
+            loader: "file-loader", // Use file-loader for image handling
+            options: {
+              name: "[name].[hash].[ext]", // Define the output naming pattern
+              outputPath: "assets/images/", // Define the output folder for images
+            },
+          },
+        ],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./public/index.html", // Use an HTML template
-     //favicon: "./src/assets/assets/favicon.svg", // Optional: favicon
+      template: "./public/index.html",
+      //favicon: "./src/assets/assets/favicon.svg",
     }),
   ],
   devServer: {
