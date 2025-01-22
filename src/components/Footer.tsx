@@ -23,17 +23,12 @@ const Footer: React.FC = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-lg text-secondary hover:text-third transition">
+                <a href="#about" className="text-lg text-secondary hover:text-third transition">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="text-lg text-secondary hover:text-third transition">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-lg text-secondary hover:text-third transition">
+                <a href="#contact" className="text-lg text-secondary hover:text-third transition">
                   Contact
                 </a>
               </li>
@@ -81,7 +76,7 @@ const Footer: React.FC = () => {
       </div>
 
       <div className="mt-12 text-center text-secondary text-xl">
-        © 2025 Furniture Inc. All rights reserved.
+        © 2025 Kozzi Homes. All rights reserved.
       </div>
     </footer>
   );

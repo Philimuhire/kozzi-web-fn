@@ -60,5 +60,6 @@ module.exports = {
     hot: true, // Enables hot module replacement
     port: 3000,
     open: true, // Automatically opens the app in the browser
+    historyApiFallback: true,
   },
 };

@@ -3,7 +3,7 @@ import heroImage from '../assets/images/garden1.jpg';
 
 const Hero: React.FC = () => {
   return (
-    <section className="bg-primary py-16">
+    <section className="bg-primary pt-48 mb-32">
       <div className="container mx-auto flex flex-col lg:flex-row items-center px-4">
         <div className="lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
           <h1 className="text-3xl font-bold text-secondary mb-4 font-outfit">

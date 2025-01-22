@@ -71,7 +71,6 @@ const FAQComponent: React.FC = () => {
             ))}
           </div>
 
-          {/* Button Section */}
           <div className="mt-6">
             <button
               className="bg-third text-secondary font-outfit py-3 px-8 rounded-lg hover:bg-[#EAB4AD] transition duration-300 ease-in-out transform hover:scale-105 font-semibold text-lg"
