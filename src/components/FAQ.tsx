@@ -34,9 +34,7 @@ const FAQComponent: React.FC = () => {
 
   return (
     <div className="w-full mx-24 my-8 p-4">
-      {/* Main Layout */}
       <div className="flex flex-col lg:flex-row gap-16 items-start">
-        {/* Left Image Section */}
         <div className="flex-shrink-0 w-full lg:w-1/3">
           <img
             src={garden1}
@@ -45,7 +43,6 @@ const FAQComponent: React.FC = () => {
           />
         </div>
 
-        {/* Right FAQ Section */}
         <div className="w-full lg:w-1/2 bg-gray-100 p-6 rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold text-primary font-outfit mb-4">
             Frequently Asked Questions

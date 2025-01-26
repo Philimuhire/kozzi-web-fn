@@ -1,73 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import gardenImage from "../../assets/images/garden1.jpg";
-import heroImage from "../../assets/images/heroImage.jpg";
-
-const productsData = [
-  {
-    id: 1,
-    name: "Wooden Chair",
-    price: "$50.00",
-    category: "Furniture",
-    image: heroImage,
-    description: "A beautiful handcrafted wooden chair, perfect for your living room or office.",
-    thumbnails: [heroImage, gardenImage],
-  },
-  {
-    id: 2,
-    name: "Study Table",
-    price: "$120.00",
-    category: "Furniture",
-    image: gardenImage,
-    description: "Sturdy and spacious study table ideal for working or studying.",
-    thumbnails: [gardenImage, heroImage],
-  },
-  {
-    id: 3,
-    name: "Green Armchair",
-    price: "$85.00",
-    category: "Furniture",
-    image: heroImage,
-    description: "Comfortable green armchair, great for relaxing in style.",
-    thumbnails: [heroImage, gardenImage],
-  },
-  {
-    id: 4,
-    name: "Rattan Sofa",
-    price: "$200.00",
-    category: "Furniture",
-    image: gardenImage,
-    description: "Elegant rattan sofa, a great addition to your home decor.",
-    thumbnails: [gardenImage, heroImage],
-  },
-  {
-    id: 5,
-    name: "Garden Chair",
-    price: "$55.00",
-    category: "Flower Gardens",
-    image: gardenImage,
-    description: "Durable and weather-resistant garden chair for outdoor use.",
-    thumbnails: [gardenImage, heroImage],
-  },
-  {
-    id: 6,
-    name: "Office Stool",
-    price: "$70.00",
-    category: "Furniture",
-    image: heroImage,
-    description: "Ergonomic office stool designed for comfort and support.",
-    thumbnails: [heroImage, gardenImage],
-  },
-];
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
-  price: string;
-  category: string;
-  image: string;
+  price: number; 
+  categoryId: string; 
+  imageUrl: string;
   description: string;
-  thumbnails: string[];
+  quantity: number; 
+}
+
+interface Category {
+  id: string;
+  name: string;
 }
 
 interface Review {
@@ -82,29 +28,61 @@ const SingleProductView: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [products, setProducts] = useState<Product[]>(() => {
-    const storedProducts = localStorage.getItem("products");
-    return storedProducts ? JSON.parse(storedProducts) : productsData;
-  });
-
-  const product = products.find((prod) => prod.id === parseInt(id || "", 10)) as Product | undefined;
-
-  const [selectedImage, setSelectedImage] = useState(product?.image || "");
+  const [product, setProduct] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [reviewText, setReviewText] = useState("");
   const [reviewStars, setReviewStars] = useState(0);
-  const [reviews, setReviews] = useState(() => {
-    const storedReviews = localStorage.getItem(`reviews-${id}`);
-    return storedReviews ? JSON.parse(storedReviews) : [];
-  });
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/products/getProduct/${id}`); 
+        if (!response.ok) {
+          throw new Error("Failed to fetch product");
+        }
+        const data = await response.json();
+        setProduct(data);
+        setSelectedImage(data.imageUrl); 
+      } catch (error: any) {
+        setError(error.message);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/categories/getAllCategories"); 
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+        const data = await response.json();
+        setCategories(data);
+      } catch (error: any) {
+        setError(error.message);
+      }
+    };
+
+    fetchProduct();
+    fetchCategories();
+  }, [id]);
 
   useEffect(() => {
-    localStorage.setItem(`reviews-${id}`, JSON.stringify(reviews));
-  }, [reviews, id]);
+    if (product) {
+      setLoading(false);
+    }
+  }, [product]);
+
+  if (loading) {
+    return <div>Loading...</div>; 
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   if (!product) {
     return (
@@ -119,6 +97,11 @@ const SingleProductView: React.FC = () => {
       </div>
     );
   }
+
+  const categoryMap = categories.reduce((acc, category) => {
+    acc[category.id] = category.name; 
+    return acc;
+  }, {} as Record<string, string>);
 
   const handleAddReview = () => {
     if (reviewText && reviewStars > 0) {
@@ -149,23 +132,18 @@ const SingleProductView: React.FC = () => {
             className="w-full h-auto rounded-lg shadow-lg"
           />
           <div className="flex mt-4 gap-4">
-            {product.thumbnails.map((thumbnail, index) => (
-              <img
-                key={index}
-                src={thumbnail}
-                alt={`Thumbnail ${index + 1}`}
-                className={`w-20 h-20 rounded-lg cursor-pointer border-2 ${
-                  selectedImage === thumbnail ? "border-primary" : "border-gray-300"
-                }`}
-                onClick={() => setSelectedImage(thumbnail)}
-              />
-            ))}
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              className="w-20 h-20 rounded-lg cursor-pointer border-2 border-gray-300"
+              onClick={() => setSelectedImage(product.imageUrl)}
+            />
           </div>
         </div>
         <div className="md:w-1/2">
           <h1 className="text-3xl font-semibold text-primary">{product.name}</h1>
-          <p className="text-lg text-gray-500 mt-2">{product.category}</p>
-          <p className="text-2xl font-bold text-third mt-4">{product.price}</p>
+          <p className="text-lg text-gray-500 mt-2">{categoryMap[product.categoryId]}</p>
+          <p className="text-2xl font-bold text-third mt-4">{`$${product.price.toFixed(2)}`}</p>
           <p className="text-lg text-gray-700 mt-6">{product.description}</p>
           <div className="flex items-center gap-4 mt-8">
             <span className="text-xl text-forth font-medium">Quantity:</span>
@@ -185,70 +163,57 @@ const SingleProductView: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="flex items-center gap-4 mt-8">
-            <button className="bg-third text-secondary px-6 py-2 rounded-lg hover:bg-[#EAB4AD] font-semibold">
-              <i className="fas fa-cart-plus"></i> Add to Cart
-            </button>
-            <button
-              className="bg-primary text-secondary px-6 py-2 rounded-lg hover:bg-[#062C56] font-semibold"
-              onClick={() => navigate(-1)}
-            >
-              Go Back
-            </button>
-          </div>
+          <button className="mt-6 bg-third text-secondary px-4 py-2 rounded-lg hover:bg-[#EAB4AD] font-semibold">
+            <i className="fas fa-cart-plus"></i> Add to Cart
+          </button>
         </div>
       </div>
-      <div className="mt-12 bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-primary mb-4">Add Your Review</h2>
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-2">
-            {[...Array(5)].map((_, index) => (
-              <button
-                key={index}
-                className={`text-2xl ${
-                  reviewStars > index ? "text-third" : "text-gray-400"
-                }`}
-                onClick={() => setReviewStars(index + 1)}
-              >
-                ★
-              </button>
-            ))}
-          </div>
+
+      <div className="mt-10">
+        <h2 className="text-2xl font-semibold text-primary">Reviews</h2>
+        <div className="mt-4">
+          {reviews.length === 0 ? (
+            <p>No reviews yet.</p>
+          ) : (
+            reviews.map((review) => (
+              <div key={review.id} className="border-b border-gray-300 py-4">
+                <p className="font-semibold">{review.reviewer}</p>
+                <p className="text-gray-600">{review.comment}</p>
+                <p className="text-gray-500">{`Rating: ${review.rating} stars`}</p>
+                <p className="text-gray-400 text-sm">{review.date}</p>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold">Leave a Review</h3>
           <textarea
+            className="w-full border border-gray-300 rounded-lg p-2 mt-2"
+            rows={4}
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
-            placeholder="Write your review..."
-            className="border border-gray-300 p-2 rounded-lg w-full"
-            rows={4}
-          ></textarea>
+            placeholder="Write your review here..."
+          />
+          <div className="flex items-center mt-2">
+            <span className="mr-4">Rating:</span>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <span
+                key={star}
+                className={`cursor-pointer ${star <= reviewStars ? "text-yellow-500" : "text-gray-300"}`}
+                onClick={() => setReviewStars(star)}
+              >
+                ★
+              </span>
+            ))}
+          </div>
           <button
-            className="bg-third text-secondary px-4 py-2 rounded-lg hover:bg-[#EAB4AD] font-semibold"
+            className="mt-4 bg-primary text-secondary px-4 py-2 rounded-lg hover:bg-third font-semibold"
             onClick={handleAddReview}
           >
             Submit Review
           </button>
         </div>
-      </div>
-      <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold text-primary mb-4">Customer Reviews</h2>
-        {reviews.length > 0 ? (
-          reviews.map((review: Review) => (
-            <div key={review.id} className="border-b border-gray-300 py-4">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{review.reviewer}</span>
-                <span className="text-sm text-gray-500">{review.date}</span>
-              </div>
-              <div className="flex gap-1 text-third">
-                {[...Array(review.rating)].map((_, i) => (
-                  <span key={i}>★</span>
-                ))}
-              </div>
-              <p className="text-gray-700 mt-2">{review.comment}</p>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No reviews yet. Be the first to leave one!</p>
-        )}
       </div>
     </div>
   );

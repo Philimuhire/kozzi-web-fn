@@ -1,6 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ContactSection: React.FC = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [message, setMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); 
+
+    const contactData = {
+      name,
+      email,
+      phoneNumber,
+      message,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/contact/sendMessage", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contactData),
+      });
+
+      if (response.ok) {
+        setSuccessMessage("Message sent successfully!");
+        setErrorMessage(""); 
+        setName("");
+        setEmail("");
+        setPhoneNumber("");
+        setMessage("");
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.error || "Failed to send message.");
+        setSuccessMessage(""); 
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      setErrorMessage("Failed to send message.");
+      setSuccessMessage(""); 
+    }
+  };
+
   return (
     <section id="contact" className="bg-secondary text-lg py-12 mx-12 sm:mx-16 md:mx-20 lg:mx-32 font-outfit mt-8">
       <h2 className="text-lg md:text-3xl font-semibold mb-8 text-primary">
@@ -28,7 +73,7 @@ const ContactSection: React.FC = () => {
         </div>
 
         <div className="flex-1 p-6 md:p-8 rounded-lg shadow-md">
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
@@ -40,6 +85,8 @@ const ContactSection: React.FC = () => {
                 type="text"
                 id="name"
                 placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full border rounded-md px-4 py-2 text-lg focus:outline-none focus:border-fifth"
               />
             </div>
@@ -51,10 +98,12 @@ const ContactSection: React.FC = () => {
                 Your Email / Phone number
               </label>
               <input
-                type="email"
+                type="text" 
                 id="email"
                 placeholder="Your email / Phone number"
-                className="w-full border rounded-md px-4 py-2 text-lg focus:outline-none focus:border-fifth"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border rounded-md px-4 py -2 text-lg focus:outline-none focus:border-fifth"
               />
             </div>
             <div>
@@ -68,6 +117,8 @@ const ContactSection: React.FC = () => {
                 id="message"
                 rows={4}
                 placeholder="Your message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="w-full border rounded-md px-4 py-2 text-lg focus:outline-none focus:border-fifth"
               ></textarea>
             </div>
@@ -78,6 +129,8 @@ const ContactSection: React.FC = () => {
               Send Message
             </button>
           </form>
+          {successMessage && <p className="text-green-500 mt-4">{successMessage}</p>}
+          {errorMessage && <p className="text-red-500 mt-4">{errorMessage}</p>}
         </div>
       </div>
     </section>
